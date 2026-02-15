@@ -88,18 +88,21 @@ function clamp(value, min, max) {
 
 // 시작 위치
 function setStartPosition() {
+  const titleRect = document.querySelector("h1").getBoundingClientRect();
+
+  const startY = titleRect.bottom + 30; // 문구 아래 30px
   const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight / 2;
 
   yesBtn.style.left = (centerX - yesBtn.offsetWidth - 20) + "px";
-  yesBtn.style.top = (centerY + 40) + "px";
+  yesBtn.style.top = startY + "px";
 
   btnX = centerX + 20;
-  btnY = centerY + 40;
+  btnY = startY;
 
   noBtn.style.left = btnX + "px";
   noBtn.style.top = btnY + "px";
 }
+
 
 window.addEventListener("load", setStartPosition);
 window.addEventListener("resize", setStartPosition);
@@ -162,3 +165,4 @@ noBtn.addEventListener("click",()=>{
 
 </body>
 </html>
+
