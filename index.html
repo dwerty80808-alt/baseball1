@@ -94,14 +94,17 @@ function clamp(value, min, max) {
 
 /* 시작 위치 */
 function setStartPosition() {
+  const wrap = document.querySelector(".wrap");
+  const rect = wrap.getBoundingClientRect();
+
+  const startY = rect.bottom + 20; // ⭐ 문구 아래
   const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight / 2 + 40;
 
   yesBtn.style.left = (centerX - yesBtn.offsetWidth - 20) + "px";
-  yesBtn.style.top = centerY + "px";
+  yesBtn.style.top = startY + "px";
 
   btnX = centerX + 20;
-  btnY = centerY;
+  btnY = startY;
 
   noBtn.style.left = btnX + "px";
   noBtn.style.top = btnY + "px";
@@ -168,3 +171,4 @@ noBtn.addEventListener("click", () => {
 
 </body>
 </html>
+
