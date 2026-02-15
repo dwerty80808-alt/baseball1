@@ -24,6 +24,7 @@ body{
 
 .wrap{
   text-align:center;
+  position:relative;
 }
 
 .main-illust{
@@ -43,7 +44,7 @@ button{
   border:none;
   border-radius:12px;
   cursor:pointer;
-  position:fixed;
+  position:absolute;
   box-shadow:0 6px 15px rgba(0,0,0,0.15);
   transition:transform .15s;
 }
@@ -88,10 +89,10 @@ function clamp(value, min, max) {
 
 // 시작 위치
 function setStartPosition() {
-  const titleRect = document.querySelector("h1").getBoundingClientRect();
+  const title = document.querySelector("h1");
+  const startY = title.offsetTop + title.offsetHeight + 30;
 
-  const startY = titleRect.bottom + 30; // 문구 아래 30px
-  const centerX = window.innerWidth / 2;
+  const centerX = document.querySelector(".wrap").offsetWidth / 2;
 
   yesBtn.style.left = (centerX - yesBtn.offsetWidth - 20) + "px";
   yesBtn.style.top = startY + "px";
@@ -102,6 +103,7 @@ function setStartPosition() {
   noBtn.style.left = btnX + "px";
   noBtn.style.top = btnY + "px";
 }
+
 
 
 window.addEventListener("load", setStartPosition);
@@ -165,4 +167,5 @@ noBtn.addEventListener("click",()=>{
 
 </body>
 </html>
+
 
