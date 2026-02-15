@@ -20,9 +20,15 @@ body{
 
 /* ⭐ 이미지 */
 .confirm-illust{
-  width:300px;
+  width:200px;
   margin-bottom:20px;
+
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+
+  filter: brightness(1.05);
 }
+
 
 h1{
   font-size:28px;
@@ -63,4 +69,5 @@ document.getElementById("next").addEventListener("click",()=>{
 
 </body>
 </html>
+
 
