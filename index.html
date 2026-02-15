@@ -15,35 +15,45 @@
 
 body{
   height:100vh;
-  background:linear-gradient(135deg,#f8fbff,#ffeef5);
-  overflow:hidden;
   display:flex;
   justify-content:center;
   align-items:center;
+  background:linear-gradient(135deg,#ffe8e8,#fff);
+  overflow:hidden;
 }
 
 .wrap{
   text-align:center;
 }
 
+.main-illust{
+  width:150px;
+  margin:0 auto 20px;
+  display:block;
+}
+
 h1{
-  font-size:26px;
+  font-size:24px;
   margin-bottom:40px;
 }
 
-/* ⭐ 중요 : 이제 화면 기준으로 움직임 */
 button{
-  position:fixed;
   font-size:18px;
-  padding:12px 24px;
-  border-radius:12px;
+  padding:12px 26px;
   border:none;
+  border-radius:12px;
   cursor:pointer;
-  transition:left 0.15s, top 0.15s;
+  position:fixed;
+  box-shadow:0 6px 15px rgba(0,0,0,0.15);
+  transition:transform .15s;
+}
+
+button:active{
+  transform:scale(0.95);
 }
 
 #yes{
-  background:#ff6b81;
+  background:#ff6b6b;
   color:white;
 }
 
@@ -54,63 +64,53 @@ button{
 </head>
 
 <body>
+
 <div class="wrap">
+  <!-- ⭐ 일러스트 -->
+  <img src="illust.jpg" class="main-illust">
+
   <h1>누나 나랑 야구 보러 갈래요?</h1>
-  .main-illust {
-  width: 140px;
-  margin-bottom: 20px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
 </div>
 
 <button id="yes">YES</button>
 <button id="no">NO</button>
 
 <script>
-const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
+const noBtn = document.getElementById("no");
 
-/* 시작 위치 */
-function setStart(){
+let btnX = 0;
+let btnY = 0;
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+// 시작 위치
+function setStartPosition() {
   const centerX = window.innerWidth / 2;
   const centerY = window.innerHeight / 2;
 
-  yesBtn.style.left = (centerX - 120) + "px";
-  yesBtn.style.top  = centerY + "px";
+  yesBtn.style.left = (centerX - yesBtn.offsetWidth - 20) + "px";
+  yesBtn.style.top = (centerY + 40) + "px";
 
-  noBtn.style.left = (centerX + 20) + "px";
-  noBtn.style.top  = centerY + "px";
+  btnX = centerX + 20;
+  btnY = centerY + 40;
+
+  noBtn.style.left = btnX + "px";
+  noBtn.style.top = btnY + "px";
 }
 
-window.addEventListener("load", setStart);
-window.addEventListener("resize", setStart);
+window.addEventListener("load", setStartPosition);
+window.addEventListener("resize", setStartPosition);
 
-/* YES 클릭 → 이동 */
+// YES → 다음 페이지
 yesBtn.addEventListener("click", () => {
-  window.location.href = "yes.html";
+  window.location.href = "success.html";
 });
 
-/* ⭐⭐⭐ 화면 안 랜덤 점프 (완전 봉인) */
-function jumpInsideScreen(){
-  const rect = noBtn.getBoundingClientRect();
-  const padding = 12;
-
-  const minX = padding;
-  const minY = padding;
-  const maxX = window.innerWidth - rect.width - padding;
-  const maxY = window.innerHeight - rect.height - padding;
-
-  const x = Math.random() * (maxX - minX) + minX;
-  const y = Math.random() * (maxY - minY) + minY;
-
-  noBtn.style.left = x + "px";
-  noBtn.style.top  = y + "px";
-}
-
-/* 가까이 가면 도망 */
-function moveAway(x,y){
+// 도망 함수
+function moveAway(x, y){
   const rect = noBtn.getBoundingClientRect();
   const centerX = rect.left + rect.width/2;
   const centerY = rect.top + rect.height/2;
@@ -119,28 +119,46 @@ function moveAway(x,y){
   const dy = centerY - y;
   const distance = Math.sqrt(dx*dx + dy*dy);
 
-  if(distance < 120){
-    jumpInsideScreen();
+  const trigger = 130;
+
+  if(distance < trigger){
+    const force = (trigger - distance) / trigger;
+    btnX += (dx/distance) * force * 25;
+    btnY += (dy/distance) * force * 25;
+
+    const maxX = window.innerWidth - noBtn.offsetWidth;
+    const maxY = window.innerHeight - noBtn.offsetHeight;
+
+    btnX = clamp(btnX, 0, maxX);
+    btnY = clamp(btnY, 0, maxY);
+
+    noBtn.style.left = btnX + "px";
+    noBtn.style.top = btnY + "px";
   }
 }
 
-/* PC */
-document.addEventListener("mousemove", e=>{
+// PC
+document.addEventListener("mousemove",(e)=>{
   moveAway(e.clientX, e.clientY);
 });
 
-/* 모바일 */
-document.addEventListener("touchmove", e=>{
+// 모바일
+document.addEventListener("touchmove",(e)=>{
   moveAway(e.touches[0].clientX, e.touches[0].clientY);
 });
 
-/* 📱 누르려는 순간 튀기 */
-noBtn.addEventListener("touchstart", (e)=>{
-  e.preventDefault();
-  jumpInsideScreen();
+// 모바일에서 누르면 순간 이동 느낌
+noBtn.addEventListener("click",()=>{
+  const maxX = window.innerWidth - noBtn.offsetWidth;
+  const maxY = window.innerHeight - noBtn.offsetHeight;
+
+  btnX = Math.random() * maxX;
+  btnY = Math.random() * maxY;
+
+  noBtn.style.left = btnX + "px";
+  noBtn.style.top = btnY + "px";
 });
 </script>
 
 </body>
 </html>
-
