@@ -89,10 +89,11 @@ function clamp(value, min, max) {
 
 // 시작 위치
 function setStartPosition() {
+  const wrap = document.querySelector(".wrap");
   const title = document.querySelector("h1");
-  const startY = title.offsetTop + title.offsetHeight + 30;
 
-  const centerX = document.querySelector(".wrap").offsetWidth / 2;
+  const centerX = wrap.offsetWidth / 2;
+  const startY = title.offsetTop + title.offsetHeight + 30;
 
   yesBtn.style.left = (centerX - yesBtn.offsetWidth - 20) + "px";
   yesBtn.style.top = startY + "px";
@@ -103,6 +104,7 @@ function setStartPosition() {
   noBtn.style.left = btnX + "px";
   noBtn.style.top = btnY + "px";
 }
+
 
 
 
@@ -131,8 +133,10 @@ function moveAway(x, y){
     btnX += (dx/distance) * force * 25;
     btnY += (dy/distance) * force * 25;
 
-    const maxX = window.innerWidth - noBtn.offsetWidth;
-    const maxY = window.innerHeight - noBtn.offsetHeight;
+    const wrap = document.querySelector(".wrap");
+    const maxX = wrap.offsetWidth - noBtn.offsetWidth;
+    const maxY = wrap.offsetHeight - noBtn.offsetHeight;
+
 
     btnX = clamp(btnX, 0, maxX);
     btnY = clamp(btnY, 0, maxY);
@@ -167,5 +171,6 @@ noBtn.addEventListener("click",()=>{
 
 </body>
 </html>
+
 
 
