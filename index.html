@@ -84,10 +84,14 @@ yesBtn.addEventListener("click", () => {
 let btnX = noBtn.offsetLeft;
 let btnY = noBtn.offsetTop;
 
-/* ⭐ 화면 안에서만 랜덤 이동 */
+function clamp(v,min,max){
+  return Math.min(Math.max(v,min),max);
+}
+
+/* 🔥 화면 안에서만 이동시키는 함수 */
 function jumpInsideScreen(){
   const rect = noBtn.getBoundingClientRect();
-  const padding = 12;
+  const padding = 10;
 
   const maxX = window.innerWidth - rect.width - padding;
   const maxY = window.innerHeight - rect.height - padding;
@@ -95,14 +99,14 @@ function jumpInsideScreen(){
   btnX = Math.random() * maxX;
   btnY = Math.random() * maxY;
 
-  btnX = Math.max(padding, btnX);
-  btnY = Math.max(padding, btnY);
+  btnX = clamp(btnX, padding, maxX);
+  btnY = clamp(btnY, padding, maxY);
 
   noBtn.style.left = btnX + "px";
   noBtn.style.top = btnY + "px";
 }
 
-/* 가까이 가면 도망 */
+/* 🔥 가까이 가면 도망 */
 function moveAway(x,y){
   const rect = noBtn.getBoundingClientRect();
   const centerX = rect.left + rect.width/2;
@@ -124,14 +128,13 @@ document.addEventListener("mousemove", e=>{
   moveAway(e.clientX, e.clientY);
 });
 
-/* 모바일 이동 */
+/* 모바일 */
 document.addEventListener("touchmove", e=>{
   moveAway(e.touches[0].clientX, e.touches[0].clientY);
 });
 
-/* 🔥 모바일 핵심 : 누르려 하면 즉시 튐 */
-noBtn.addEventListener("touchstart", (e)=>{
-  e.preventDefault();
+/* 🔥 아이폰 : 누르려는 순간에도 도망 */
+noBtn.addEventListener("touchstart", () => {
   jumpInsideScreen();
 });
 </script>
