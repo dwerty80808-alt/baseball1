@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>누나 나랑 야구보러갈래요?</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#f8fbff,#ffeef5);
+  overflow:hidden;
+}
+
+.wrap{
+  text-align:center;
+}
+
+h1{
+  font-size:26px;
+  margin-bottom:40px;
+}
+
+.buttons{
+  position:relative;
+  width:260px;
+  height:120px;
+  margin:auto;
+}
+
+button{
+  position:absolute;
+  font-size:18px;
+  padding:12px 24px;
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+  transition:left 0.15s, top 0.15s;
+}
+
+#yes{
+  background:#ff6b81;
+  color:white;
+  left:20px;
+  top:40px;
+}
+
+#no{
+  background:#ddd;
+  left:140px;
+  top:40px;
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <h1>누나 나랑 야구 보러 갈래요?</h1>
+
+  <div class="buttons">
+    <button id="yes">YES</button>
+    <button id="no">NO</button>
+  </div>
+</div>
+
+<script>
+const noBtn = document.getElementById("no");
+const yesBtn = document.getElementById("yes");
+
+yesBtn.addEventListener("click", () => {
+  window.location.href = "yes.html";
+});
+
+let btnX = noBtn.offsetLeft;
+let btnY = noBtn.offsetTop;
+
+function clamp(value, min, max){
+  return Math.min(Math.max(value, min), max);
+}
+
+function moveAway(x,y){
+  const rect = noBtn.getBoundingClientRect();
+  const centerX = rect.left + rect.width/2;
+  const centerY = rect.top + rect.height/2;
+
+  const dx = centerX - x;
+  const dy = centerY - y;
+  const distance = Math.sqrt(dx*dx + dy*dy);
+
+  const trigger = 120;
+
+function moveAway(x, y){
+  const rect = noBtn.getBoundingClientRect();
+  const centerX = rect.left + rect.width/2;
+  const centerY = rect.top + rect.height/2;
+
+  const dx = centerX - x;
+  const dy = centerY - y;
+  const distance = Math.sqrt(dx*dx + dy*dy);
+
+  const trigger = 120;
+
+  if(distance < trigger){
+    const maxX = window.innerWidth - rect.width;
+    const maxY = window.innerHeight - rect.height;
+
+    // 🔥 랜덤 위치로 순간이동
+    btnX = Math.random() * maxX;
+    btnY = Math.random() * maxY;
+
+    noBtn.style.left = btnX + "px";
+    noBtn.style.top = btnY + "px";
+  }
+}
+
+
+document.addEventListener("mousemove", e=>{
+  moveAway(e.clientX, e.clientY);
+});
+
+document.addEventListener("touchmove", e=>{
+  moveAway(e.touches[0].clientX, e.touches[0].clientY);
+});
+</script>
+
+</body>
+</html>
