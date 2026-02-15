@@ -15,11 +15,11 @@
 
 body{
   height:100vh;
+  background:linear-gradient(135deg,#f8fbff,#ffeef5);
+  overflow:hidden;
   display:flex;
   justify-content:center;
   align-items:center;
-  background:linear-gradient(135deg,#f8fbff,#ffeef5);
-  overflow:hidden;
 }
 
 .wrap{
@@ -31,15 +31,9 @@ h1{
   margin-bottom:40px;
 }
 
-.buttons{
-  position:relative;
-  width:260px;
-  height:120px;
-  margin:auto;
-}
-
+/* ⭐ 중요 : 이제 화면 기준으로 움직임 */
 button{
-  position:absolute;
+  position:fixed;
   font-size:18px;
   padding:12px 24px;
   border-radius:12px;
@@ -51,14 +45,10 @@ button{
 #yes{
   background:#ff6b81;
   color:white;
-  left:20px;
-  top:40px;
 }
 
 #no{
   background:#ddd;
-  left:140px;
-  top:40px;
 }
 </style>
 </head>
@@ -66,47 +56,53 @@ button{
 <body>
 <div class="wrap">
   <h1>누나 나랑 야구 보러 갈래요?</h1>
-
-  <div class="buttons">
-    <button id="yes">YES</button>
-    <button id="no">NO</button>
-  </div>
 </div>
+
+<button id="yes">YES</button>
+<button id="no">NO</button>
 
 <script>
 const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
 
+/* 시작 위치 */
+function setStart(){
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2;
+
+  yesBtn.style.left = (centerX - 120) + "px";
+  yesBtn.style.top  = centerY + "px";
+
+  noBtn.style.left = (centerX + 20) + "px";
+  noBtn.style.top  = centerY + "px";
+}
+
+window.addEventListener("load", setStart);
+window.addEventListener("resize", setStart);
+
+/* YES 클릭 → 이동 */
 yesBtn.addEventListener("click", () => {
   window.location.href = "yes.html";
 });
 
-let btnX = noBtn.offsetLeft;
-let btnY = noBtn.offsetTop;
-
-function clamp(v,min,max){
-  return Math.min(Math.max(v,min),max);
-}
-
-/* 🔥 화면 안에서만 이동시키는 함수 */
+/* ⭐⭐⭐ 화면 안 랜덤 점프 (완전 봉인) */
 function jumpInsideScreen(){
   const rect = noBtn.getBoundingClientRect();
-  const padding = 10;
+  const padding = 12;
 
+  const minX = padding;
+  const minY = padding;
   const maxX = window.innerWidth - rect.width - padding;
   const maxY = window.innerHeight - rect.height - padding;
 
-  btnX = Math.random() * maxX;
-  btnY = Math.random() * maxY;
+  const x = Math.random() * (maxX - minX) + minX;
+  const y = Math.random() * (maxY - minY) + minY;
 
-  btnX = clamp(btnX, padding, maxX);
-  btnY = clamp(btnY, padding, maxY);
-
-  noBtn.style.left = btnX + "px";
-  noBtn.style.top = btnY + "px";
+  noBtn.style.left = x + "px";
+  noBtn.style.top  = y + "px";
 }
 
-/* 🔥 가까이 가면 도망 */
+/* 가까이 가면 도망 */
 function moveAway(x,y){
   const rect = noBtn.getBoundingClientRect();
   const centerX = rect.left + rect.width/2;
@@ -116,9 +112,7 @@ function moveAway(x,y){
   const dy = centerY - y;
   const distance = Math.sqrt(dx*dx + dy*dy);
 
-  const trigger = 120;
-
-  if(distance < trigger){
+  if(distance < 120){
     jumpInsideScreen();
   }
 }
@@ -133,8 +127,9 @@ document.addEventListener("touchmove", e=>{
   moveAway(e.touches[0].clientX, e.touches[0].clientY);
 });
 
-/* 🔥 아이폰 : 누르려는 순간에도 도망 */
-noBtn.addEventListener("touchstart", () => {
+/* 📱 누르려는 순간 튀기 */
+noBtn.addEventListener("touchstart", (e)=>{
+  e.preventDefault();
   jumpInsideScreen();
 });
 </script>
