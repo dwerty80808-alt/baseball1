@@ -67,18 +67,18 @@ button:active{
 <body>
 
 <div class="wrap">
-  <!-- ⭐ 일러스트 -->
   <img src="illust.jpg" class="main-illust">
-
   <h1>누나 나랑 야구 보러 갈래요?</h1>
-</div>
 
-<button id="yes">YES</button>
-<button id="no">NO</button>
+  <!-- ⭐ 버튼을 wrap 안으로 -->
+  <button id="yes">YES</button>
+  <button id="no">NO</button>
+</div>
 
 <script>
 const yesBtn = document.getElementById("yes");
 const noBtn = document.getElementById("no");
+const wrap = document.querySelector(".wrap");
 
 let btnX = 0;
 let btnY = 0;
@@ -87,12 +87,10 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-// 시작 위치
+// ⭐ 시작 위치 → wrap 아래
 function setStartPosition() {
-  const wrap = document.querySelector(".wrap");
-
   const centerX = wrap.offsetWidth / 2;
-  const startY = wrap.offsetHeight + 20; // ⭐ wrap 아래
+  const startY = wrap.offsetHeight + 20;
 
   yesBtn.style.left = (centerX - yesBtn.offsetWidth - 20) + "px";
   yesBtn.style.top = startY + "px";
@@ -104,10 +102,6 @@ function setStartPosition() {
   noBtn.style.top = btnY + "px";
 }
 
-
-
-
-
 window.addEventListener("load", setStartPosition);
 window.addEventListener("resize", setStartPosition);
 
@@ -116,7 +110,7 @@ yesBtn.addEventListener("click", () => {
   window.location.href = "success.html";
 });
 
-// 도망 함수
+// 도망
 function moveAway(x, y){
   const rect = noBtn.getBoundingClientRect();
   const centerX = rect.left + rect.width/2;
@@ -133,10 +127,8 @@ function moveAway(x, y){
     btnX += (dx/distance) * force * 25;
     btnY += (dy/distance) * force * 25;
 
-    const wrap = document.querySelector(".wrap");
     const maxX = wrap.offsetWidth - noBtn.offsetWidth;
     const maxY = wrap.offsetHeight - noBtn.offsetHeight;
-
 
     btnX = clamp(btnX, 0, maxX);
     btnY = clamp(btnY, 0, maxY);
@@ -156,10 +148,10 @@ document.addEventListener("touchmove",(e)=>{
   moveAway(e.touches[0].clientX, e.touches[0].clientY);
 });
 
-// 모바일에서 누르면 순간 이동 느낌
+// 모바일에서 누르면 랜덤 이동
 noBtn.addEventListener("click",()=>{
-  const maxX = window.innerWidth - noBtn.offsetWidth;
-  const maxY = window.innerHeight - noBtn.offsetHeight;
+  const maxX = wrap.offsetWidth - noBtn.offsetWidth;
+  const maxY = wrap.offsetHeight - noBtn.offsetHeight;
 
   btnX = Math.random() * maxX;
   btnY = Math.random() * maxY;
@@ -171,7 +163,3 @@ noBtn.addEventListener("click",()=>{
 
 </body>
 </html>
-
-
-
-
