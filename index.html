@@ -45,7 +45,7 @@ button{
   border-radius:12px;
   border:none;
   cursor:pointer;
-  transition:left 0.15s, top 0.15s, opacity 0.1s;
+  transition:left 0.15s, top 0.15s;
 }
 
 #yes{
@@ -84,11 +84,25 @@ yesBtn.addEventListener("click", () => {
 let btnX = noBtn.offsetLeft;
 let btnY = noBtn.offsetTop;
 
-function clamp(v,min,max){
-  return Math.min(Math.max(v,min),max);
+/* ⭐ 화면 안에서만 랜덤 이동 */
+function jumpInsideScreen(){
+  const rect = noBtn.getBoundingClientRect();
+  const padding = 12;
+
+  const maxX = window.innerWidth - rect.width - padding;
+  const maxY = window.innerHeight - rect.height - padding;
+
+  btnX = Math.random() * maxX;
+  btnY = Math.random() * maxY;
+
+  btnX = Math.max(padding, btnX);
+  btnY = Math.max(padding, btnY);
+
+  noBtn.style.left = btnX + "px";
+  noBtn.style.top = btnY + "px";
 }
 
-/* 🔥 가까이 가면 도망 (PC + 모바일 공통) */
+/* 가까이 가면 도망 */
 function moveAway(x,y){
   const rect = noBtn.getBoundingClientRect();
   const centerX = rect.left + rect.width/2;
@@ -101,14 +115,7 @@ function moveAway(x,y){
   const trigger = 120;
 
   if(distance < trigger){
-    const maxX = window.innerWidth - rect.width;
-    const maxY = window.innerHeight - rect.height;
-
-    btnX = Math.random() * maxX;
-    btnY = Math.random() * maxY;
-
-    noBtn.style.left = btnX + "px";
-    noBtn.style.top = btnY + "px";
+    jumpInsideScreen();
   }
 }
 
@@ -117,23 +124,15 @@ document.addEventListener("mousemove", e=>{
   moveAway(e.clientX, e.clientY);
 });
 
-/* 모바일 */
+/* 모바일 이동 */
 document.addEventListener("touchmove", e=>{
   moveAway(e.touches[0].clientX, e.touches[0].clientY);
 });
 
-/* 🔥🔥 아이폰 필살기 : 누르려 하면 순간 이동 */
-noBtn.addEventListener("touchstart", () => {
-  const rect = noBtn.getBoundingClientRect();
-
-  const maxX = window.innerWidth - rect.width;
-  const maxY = window.innerHeight - rect.height;
-
-  btnX = Math.random() * maxX;
-  btnY = Math.random() * maxY;
-
-  noBtn.style.left = btnX + "px";
-  noBtn.style.top = btnY + "px";
+/* 🔥 모바일 핵심 : 누르려 하면 즉시 튐 */
+noBtn.addEventListener("touchstart", (e)=>{
+  e.preventDefault();
+  jumpInsideScreen();
 });
 </script>
 
