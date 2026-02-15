@@ -22,22 +22,25 @@ body{
   overflow:hidden;
 }
 
+/* 중앙 콘텐츠 */
 .wrap{
   text-align:center;
-  position:relative;
 }
 
+/* 일러스트 */
 .main-illust{
-  width:150px;
+  width:170px;
   margin:0 auto 20px;
   display:block;
 }
 
+/* 제목 */
 h1{
   font-size:24px;
-  margin-bottom:40px;
+  margin-bottom:30px;
 }
 
+/* 버튼 공통 */
 button{
   font-size:18px;
   padding:12px 26px;
@@ -46,7 +49,11 @@ button{
   cursor:pointer;
   position:absolute;
   box-shadow:0 6px 15px rgba(0,0,0,0.15);
-  transition:transform .15s;
+
+  /* ⭐ 스르륵 핵심 */
+  transition: left 0.45s cubic-bezier(.25,.8,.25,1),
+              top 0.45s cubic-bezier(.25,.8,.25,1),
+              transform .15s;
 }
 
 button:active{
@@ -69,16 +76,14 @@ button:active{
 <div class="wrap">
   <img src="illust.jpg" class="main-illust">
   <h1>누나 나랑 야구 보러 갈래요?</h1>
-
-  <!-- ⭐ 버튼을 wrap 안으로 -->
-  <button id="yes">YES</button>
-  <button id="no">NO</button>
 </div>
+
+<button id="yes">YES</button>
+<button id="no">NO</button>
 
 <script>
 const yesBtn = document.getElementById("yes");
 const noBtn = document.getElementById("no");
-const wrap = document.querySelector(".wrap");
 
 let btnX = 0;
 let btnY = 0;
@@ -87,16 +92,16 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-// ⭐ 시작 위치 → wrap 아래
+/* 시작 위치 */
 function setStartPosition() {
-  const centerX = wrap.offsetWidth / 2;
-  const startY = wrap.offsetHeight + 20;
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2 + 40;
 
   yesBtn.style.left = (centerX - yesBtn.offsetWidth - 20) + "px";
-  yesBtn.style.top = startY + "px";
+  yesBtn.style.top = centerY + "px";
 
   btnX = centerX + 20;
-  btnY = startY;
+  btnY = centerY;
 
   noBtn.style.left = btnX + "px";
   noBtn.style.top = btnY + "px";
@@ -105,12 +110,12 @@ function setStartPosition() {
 window.addEventListener("load", setStartPosition);
 window.addEventListener("resize", setStartPosition);
 
-// YES → 다음 페이지
+/* YES → 다음 페이지 */
 yesBtn.addEventListener("click", () => {
   window.location.href = "confirm.html";
 });
 
-// 도망
+/* 가까이 가면 도망 */
 function moveAway(x, y){
   const rect = noBtn.getBoundingClientRect();
   const centerX = rect.left + rect.width/2;
@@ -127,8 +132,8 @@ function moveAway(x, y){
     btnX += (dx/distance) * force * 25;
     btnY += (dy/distance) * force * 25;
 
-    const maxX = wrap.offsetWidth - noBtn.offsetWidth;
-    const maxY = wrap.offsetHeight - noBtn.offsetHeight;
+    const maxX = window.innerWidth - noBtn.offsetWidth;
+    const maxY = window.innerHeight - noBtn.offsetHeight;
 
     btnX = clamp(btnX, 0, maxX);
     btnY = clamp(btnY, 0, maxY);
@@ -138,30 +143,28 @@ function moveAway(x, y){
   }
 }
 
-// PC
+/* PC */
 document.addEventListener("mousemove",(e)=>{
   moveAway(e.clientX, e.clientY);
 });
 
-// 모바일
+/* 모바일 */
 document.addEventListener("touchmove",(e)=>{
   moveAway(e.touches[0].clientX, e.touches[0].clientY);
 });
 
-// 모바일에서 누르면 랜덤 이동
-noBtn.addEventListener("click",()=>{
-  const maxX = wrap.offsetWidth - noBtn.offsetWidth;
-  const maxY = wrap.offsetHeight - noBtn.offsetHeight;
+/* ⭐ 누르면 멀리 스르륵 */
+noBtn.addEventListener("click", () => {
+  const move = 220; // 멀리
 
-  btnX = Math.random() * maxX;
-  btnY = Math.random() * maxY;
+  btnX += move;
+
+  const maxX = window.innerWidth - noBtn.offsetWidth;
+  if (btnX > maxX) btnX = maxX;
 
   noBtn.style.left = btnX + "px";
-  noBtn.style.top = btnY + "px";
 });
 </script>
 
 </body>
 </html>
-
-
